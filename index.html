@@ -73,7 +73,7 @@
             background-color: #00345f;
             color: #ffffff;
         }
-        button {
+        button, .button-link {
             padding: 10px 15px;
             font-size: 16px;
             color: rgb(255, 255, 255);
@@ -82,8 +82,10 @@
             border-radius: 5px;
             cursor: pointer;
             margin: 10px 5px 10px 0;
+            text-decoration: none; /* Remove underline from link */
+            display: inline-block; /* Make the link behave like a button */
         }
-        button:hover {
+        button:hover, .button-link:hover {
             background-color: #74bed483;
         }
         table {
@@ -132,7 +134,7 @@
             <div class="info-container">
                 <h2>Feuille de service</h2>
                 <p>N'oubliez pas de remplire votre fiche de service</p>
-                <button onclick="window.location.href='https://forms.gle/1XKGHLdrCsUC5wRu7'">Fiche de service</button>
+                <a href="https://forms.gle/1XKGHLdrCsUC5wRu7" target="_blank" class="button-link">Voir le document</a>
             </div>
         </div>
             <div class="container">
