@@ -5,143 +5,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcul des Horaires de Bus</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-            padding: 20px;
+            background: 
+                linear-gradient(to bottom, rgb(0, 0, 0), rgba(255, 255, 255, 0)),
+                linear-gradient(175deg, #0e53adde, #0e53adde 60%, #141416 60%, #141416);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .main-container {
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            width: 100%;
+            max-width: 1500px;
         }
-        .container, .instructions-container, .clock-container {
-            background-color: white;
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+        .clock-container,
+        .info-container,
+        .container,
+        .instructions-container {
+            background-color: #1B1C1E;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 0 10px;
-            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(45, 116, 221, 0.671);
+            margin: 10px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+        .container {
+            padding: 20px 30px; /* Ajouter un padding supplémentaire sur les côtés */
+            margin-left: 30px;
+        }
+        .instructions-container {
+            max-width: 400px;
+            max-height: 300px; /* Définir une hauteur maximale */
         }
         .clock-container {
             font-size: 2rem;
             text-align: center;
-            margin-bottom: 20px;
         }
-        .container, .instructions-container {
-            flex-grow: 1;
-            margin: 0 10px;
+        .container h1,
+        .instructions-container h2 {
+            color: #ffffff;
+            font-size: 2rem;
+            text-align: center;
         }
         input, select {
             padding: 10px;
             font-size: 16px;
             margin: 10px 0;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid #00000000;
             width: calc(100% - 22px);
+            background-color: #00345f;
+            color: #ffffff;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            color: rgb(255, 255, 255);
+            background-color: #00345f;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover {
+            background-color: #74bed483;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: #00345f;
         }
         table, th, td {
-            border: 1px solid #ccc;
+            border: 1px solid #0370c9;
+        }
+        th {
+            background-color: #00345f;
+            color: #ffffff;
         }
         th, td {
             padding: 10px;
             text-align: center;
         }
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+        }
         @media (max-width: 600px) {
-            body {
+            .main-container {
                 flex-direction: column;
                 align-items: center;
-            }
-            .container, .instructions-container, .clock-container {
-                margin: 0;
             }
         }
     </style>
 </head>
 <body>
-    
-        <div class="clock-container">
-            <div id="clock"></div>
-        </div>
-        <div class="container">
-            <h1>Calcul des Horaires de Bus</h1>
-            <p>Entrez l'heure de début du chauffeur :</p>
-            <input type="time" id="startTime">
-            
-            <p>Sélectionnez votre ligne :</p>
-            <select id="lineSelect">
-                <option value="">--Sélectionner une ligne--</option>
-                <option value="ligne1">Ligne 1</option>
-                <option value="ligne2">Ligne 2</option>
-                <option value="ligne3">Ligne 3</option>
-            </select>
-            
-            <button onclick="calculateSchedule()">Calculer les Horaires</button>
-            <button onclick="resetSchedule()">Annuler la Ligne</button>
-            
-            <input type="checkbox" id="muteSound">
-            <label for="muteSound">Activer/Désactiver le Son</label>
-
-            <div class="result" style="max-height: 400px; overflow-y: auto;">
-                <table id="scheduleTable">
-                    <thead>
-                        <tr>
-                            <th>Nom de l'arrêt</th>
-                            <th>Arrivée à l'arrêt</th>
-                            <th>Départ de l'arrêt</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scheduleBody"></tbody>
-                </table>
+    <div class="main-container">
+        <div class="column">
+            <div class="clock-container">
+                <div id="clock"></div>
+            </div>
+            <div class="info-container">
+                <h2>Feuille de service</h2>
+                <p>N'oubliez pas de remplire votre fiche de service</p>
+                <button onclick="window.location.href='https://forms.gle/1XKGHLdrCsUC5wRu7'">Fiche de service</button>
             </div>
         </div>
+            <div class="container">
+                
+                <h1>Calcul des Horaires de Bus</h1>
+                <p>Entrez l'heure de début du chauffeur :</p>
+                <input type="time" id="startTime">
+                
+                <p>Sélectionnez votre ligne :</p>
+                <select id="lineSelect">
+                    <option value="">--Sélectionner une ligne--</option>
+                    <option value="ligne1">Ligne 1</option>
+                    <option value="ligne2">Ligne 2</option>
+                    <option value="ligne3">Ligne 3</option>
+                </select>
+                
+                <button onclick="calculateSchedule()">Calculer les Horaires</button>
+                <button onclick="resetSchedule()">Annuler la Ligne</button>
+                
+                
+                <label style="display: flex; align-items: center;">
+                    <input type="checkbox" id="muteSound">
+                    <span>Activer/Désactiver le Son </span>
+                </label>
 
-        <div class="instructions-container">
-            <h2>Instructions</h2>
-            <p>1. Entrez l'heure de début du chauffeur dans le champ prévu.</p>
-            <p>2. Sélectionnez la ligne de bus parmi les options disponibles.</p>
-            <p>3. Cliquez sur "Calculer les Horaires" pour générer le tableau des horaires.</p>
-            <p>4. Consultez le tableau des horaires pour voir les heures d'arrivée et de départ aux différents arrêts.</p>
+                <div class="result" style="max-height: 400px; overflow-y: auto;">
+                    <table id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>Nom de l'arrêt</th>
+                                <th>Arrivée à l'arrêt</th>
+                                <th>Départ de l'arrêt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="instructions-container">
+                <div class="background-image" style="background-image: url('path-to-your-image.jpg');"></div>
+                <h2>Instructions</h2>
+                <p>1. Entrez l'heure de début du chauffeur dans le champ prévu.</p>
+                <p>2. Sélectionnez la ligne de bus parmi les options disponibles.</p>
+                <p>3. Cliquez sur "Calculer les Horaires" pour générer le tableau des horaires.</p>
+                <p>4. Consultez le tableau des horaires pour voir les heures d'arrivée et de départ aux différents arrêts.</p>
+            </div>
         </div>
+    </div>
 
     <script>
         const PAUSE_TIME = 30; // Temps de pause en secondes (30 secondes)
 
         const lines = {
             'ligne1': [
-                { name: 'Gare Routière', duration: 15, arrivalSound: 'https://drive.google.com/file/d/1tsIg1olZfMsg_6L5kz13kwa11c_eQrS5/view?usp=sharing', departureSound: 'https://drive.google.com/file/d/1fLD5Sb5zdX5ix0o_D8BwrFhMeGfjYGyM/view?usp=sharing' },
-                { name: 'Hôpital St Boise', duration: 30, arrivalSound: 'https://drive.google.com/file/d/1tsIg1olZfMsg_6L5kz13kwa11c_eQrS5/view?usp=sharing', departureSound: 'https://drive.google.com/file/d/1fLD5Sb5zdX5ix0o_D8BwrFhMeGfjYGyM/view?usp=sharing' },
-                { name: 'Concessionnaire', duration: 45, arrivalSound: 'https://drive.google.com/file/d/1tsIg1olZfMsg_6L5kz13kwa11c_eQrS5/view?usp=sharing', departureSound: 'https://drive.google.com/file/d/1fLD5Sb5zdX5ix0o_D8BwrFhMeGfjYGyM/view?usp=sharing' },
-                { name: 'Quartier des Tilleuls', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Amboise Nord Centre', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Circuit Karting', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Garage Karting', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Dépôt des Routiers', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Magasin de vêtements', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Z.I Fuye 1', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'La Fuye Centre', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'La Reigneire', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'UFO Grill', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Z.I La Fuye 3', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Domaine Viticole', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Camp de Bucheron', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Déchetterie', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Gare Routière', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+                { name: 'Gare Routière', duration: 15, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Hôpital St Boise', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Concessionnaire', duration: 45, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Quartier des Tilleuls', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Amboise Nord Centre', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Circuit Karting', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Garage Karting', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Dépôt des Routiers', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Magasin de vêtements', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Z.I Fuye 1', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'La Fuye Centre', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'La Reigneire', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'UFO Grill', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Z.I La Fuye 3', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Domaine Viticole', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Camp de Bucheron', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Déchetterie', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
+                { name: 'Gare Routière', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  }
             ],
             'ligne2': [
-                { name: 'Arrêt X', duration: 15, arrivalSound: 'https://drive.google.com/file/d/1tsIg1olZfMsg_6L5kz13kwa11c_eQrS5/view?usp=sharing', departureSound: 'sounds/departure.mp3' },
-                { name: 'Arrêt Y', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                { name: 'Arrêt Z', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+                { name: 'Arrêt X', duration: 15, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
+                { name: 'Arrêt Y', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
+                { name: 'Arrêt Z', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   }
             ],
             'ligne3': [
-                { name: 'Arrêt P', duration: 25 },
-                { name: 'Arrêt Q', duration: 20 },
-                { name: 'Arrêt R', duration: 30 }
+                { name: 'Arrêt P', duration: 25, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
+                { name: 'Arrêt Q', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
+                { name: 'Arrêt R', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   }
             ]
         };
 
