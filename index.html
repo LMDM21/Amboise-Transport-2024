@@ -25,6 +25,7 @@
             align-items: flex-start;
             width: 100%;
             max-width: 1500px;
+            
         }
         .column {
             display: flex;
@@ -48,6 +49,7 @@
         .container {
             padding: 20px 30px; /* Ajouter un padding supplémentaire sur les côtés */
             margin-left: 30px;
+          
         }
         .instructions-container {
             max-width: 400px;
@@ -63,6 +65,22 @@
             font-size: 2rem;
             text-align: center;
         }
+        ::-webkit-scrollbar {
+    width: 5px; /* Largeur de la barre de défilement */
+}
+
+::-webkit-scrollbar-track {
+    background: #000000cc; /* Couleur de fond de la piste */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; /* Couleur de la poignée de défilement */
+    border-radius: 5px; /* Bordure arrondie de la poignée */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Couleur de la poignée de défilement au survol */
+}
         input, select {
             padding: 10px;
             font-size: 16px;
@@ -88,6 +106,15 @@
         button:hover, .button-link:hover {
             background-color: #74bed483;
         }
+        .result {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 20px; /* Ajout de marge au-dessus du tableau */
+}
+
+.result table {
+    margin-top: 10px; /* Ajout de marge au-dessus du tableau */
+}
         table {
             width: 100%;
             border-collapse: collapse;
@@ -117,6 +144,19 @@
             background-position: center;
             border-radius: 10px;
         }
+        .icon::before {
+        width: 1px; /* Ajustez la largeur des icônes */
+        height: 1px; /* Ajustez la hauteur des icônes */
+    }
+        .icon-refuel::before {
+            content: url('https://img.icons8.com/ios-filled/50/000000/gas-pump.png'); /* Icône de pompe à essence */
+        }
+        .icon-no-refuel::before {
+            content: url('https://img.icons8.com/ios-filled/50/000000/cancel.png'); /* Icône de croix */
+        }
+        .icon-cell {
+            width: 1px; /* Ajustez la largeur de la colonne */
+        }
         @media (max-width: 600px) {
             .main-container {
                 flex-direction: column;
@@ -133,45 +173,45 @@
             </div>
             <div class="info-container">
                 <h2>Feuille de service</h2>
-                <p>N'oubliez pas de remplire votre fiche de service</p>
+                <p>N'oubliez pas de remplir votre fiche de service</p>
                 <a href="https://forms.gle/1XKGHLdrCsUC5wRu7" target="_blank" class="button-link">Voir le document</a>
             </div>
         </div>
-            <div class="container">
-                
-                <h1>Calcul des Horaires de Bus</h1>
-                <p>Entrez l'heure de début du chauffeur :</p>
-                <input type="time" id="startTime">
-                
-                <p>Sélectionnez votre ligne :</p>
-                <select id="lineSelect">
-                    <option value="">--Sélectionner une ligne--</option>
-                    <option value="ligne1">Ligne 1</option>
-                    <option value="ligne2">Ligne 2</option>
-                    <option value="ligne3">Ligne 3</option>
-                </select>
-                
-                <button onclick="calculateSchedule()">Calculer les Horaires</button>
-                <button onclick="resetSchedule()">Annuler la Ligne</button>
-                
-                
-                <label style="display: flex; align-items: center;">
-                    <input type="checkbox" id="muteSound">
-                    <span>Activer/Désactiver le Son </span>
-                </label>
+        <div class="container">
+            <h1>Calcul des Horaires de Bus</h1>
+            <p>Entrez l'heure de début du chauffeur :</p>
+            <input type="time" id="startTime">
 
-                <div class="result" style="max-height: 400px; overflow-y: auto;">
-                    <table id="scheduleTable">
-                        <thead>
-                            <tr>
-                                <th>Nom de l'arrêt</th>
-                                <th>Arrivée à l'arrêt</th>
-                                <th>Départ de l'arrêt</th>
-                            </tr>
-                        </thead>
-                        <tbody id="scheduleBody"></tbody>
-                    </table>
-                </div>
+            <p>Sélectionnez votre ligne :</p>
+            <select id="lineSelect">
+                <option value="">--Sélectionner une ligne--</option>
+                <option value="ligne1">Ligne 1</option>
+                <option value="ligne2">Ligne 2</option>
+                <option value="ligne3">Ligne 3</option>
+            </select>
+
+            <button onclick="calculateSchedule()">Calculer les Horaires</button>
+            <button onclick="resetSchedule()">Annuler la Ligne</button>
+
+            <label style="display: flex; align-items: center;">
+                <input type="checkbox" id="muteSound">
+                <span>Activer/Désactiver le Son </span>
+            </label>
+
+            <div class="result" style="max-height: 400px; overflow-y: auto;">
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Nom de l'arrêt</th>
+                            <th>Arrivée à l'arrêt</th>
+                            <th>Départ de l'arrêt</th>
+                            <th>fuel</th> <!-- Nouvelle colonne pour l'indication de ravitaillement -->
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody"></tbody>
+                
+            </table>
+            </div>
             </div>
             <div class="instructions-container">
                 <div class="background-image" style="background-image: url('path-to-your-image.jpg');"></div>
@@ -181,146 +221,154 @@
                 <p>3. Cliquez sur "Calculer les Horaires" pour générer le tableau des horaires.</p>
                 <p>4. Consultez le tableau des horaires pour voir les heures d'arrivée et de départ aux différents arrêts.</p>
             </div>
-        </div>
-    </div>
-
-    <script>
-        const PAUSE_TIME = 30; // Temps de pause en secondes (30 secondes)
-
-        const lines = {
-            'ligne1': [
-                { name: 'Gare Routière', duration: 15, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Hôpital St Boise', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Concessionnaire', duration: 45, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Quartier des Tilleuls', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Amboise Nord Centre', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Circuit Karting', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Garage Karting', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Dépôt des Routiers', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Magasin de vêtements', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Z.I Fuye 1', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'La Fuye Centre', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'La Reigneire', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'UFO Grill', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Z.I La Fuye 3', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Domaine Viticole', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Camp de Bucheron', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Déchetterie', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  },
-                { name: 'Gare Routière', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'  }
-            ],
-            'ligne2': [
-                { name: 'Arrêt X', duration: 15, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
-                { name: 'Arrêt Y', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
-                { name: 'Arrêt Z', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   }
-            ],
-            'ligne3': [
-                { name: 'Arrêt P', duration: 25, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
-                { name: 'Arrêt Q', duration: 20, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   },
-                { name: 'Arrêt R', duration: 30, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3'   }
-            ]
-        };
-
-        let timeoutIds = []; // Stocker les identifiants de timeout pour les sons
-
-        function calculateSchedule() {
-            resetSchedule();
-            var startTime = document.getElementById('startTime').value;
-            var lineSelect = document.getElementById('lineSelect').value;
+            </div>
             
-            if (!startTime || !lineSelect) {
-                alert('Veuillez entrer l\'heure de début et sélectionner une ligne.');
-                return;
+            <script>
+                const PAUSE_TIME = 30; // Temps de pause en secondes (30 secondes)
+                const REFUELING_TIME = 120; // Temps de pause pour faire le plein en secondes (2 minutes)
+            
+                const lines = {
+                    'ligne1': [
+                        { name: 'Gare Routière', duration: 15, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Hôpital St Boise', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Concessionnaire', duration: 45, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Quartier des Tilleuls', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Amboise Nord Centre', duration: 30, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }, // Arrêt pour faire le plein
+                        { name: 'Circuit Karting', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Garage Karting', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Dépôt des Routiers', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Magasin de vêtements', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Z.I Fuye 1', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'La Fuye Centre', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'La Reigneire', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'UFO Grill', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Z.I La Fuye 3', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Domaine Viticole', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Camp de Bucheron', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Déchetterie', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Gare Routière', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+                    ],
+                    'ligne2': [
+                        { name: 'Arrêt X', duration: 15, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }, // Arrêt pour faire le plein
+                        { name: 'Arrêt Y', duration: 20, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Arrêt Z', duration: 20, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+                    ],
+                    'ligne3': [
+                        { name: 'Arrêt P', duration: 25, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Arrêt Q', duration: 20, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Arrêt R', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+                    ]
+                };
+            
+                let timeoutIds = []; // Stocker les identifiants de timeout pour les sons
+            
+                function calculateSchedule() {
+                    resetSchedule();
+                    var startTime = document.getElementById('startTime').value;
+                    var lineSelect = document.getElementById('lineSelect').value;
+            
+                    if (!startTime || !lineSelect) {
+                        alert('Veuillez entrer l\'heure de début et sélectionner une ligne.');
+                        return;
+                    }
+            
+                    var line = lines[lineSelect];
+                    var currentDate = new Date();
+                    var startHours = parseInt(startTime.split(':')[0]);
+                    var startMinutes = parseInt(startTime.split(':')[1]);
+                    currentDate.setHours(startHours);
+                    currentDate.setMinutes(startMinutes);
+                    currentDate.setSeconds(0); // Set seconds to zero
+            
+                    var scheduleBody = document.getElementById('scheduleBody');
+                    scheduleBody.innerHTML = ''; // Clear previous results
+            
+                    for (var i = 0; i < line.length; i++) {
+                        var row = document.createElement('tr');
+                        var stop = line[i];
+                        var stopName = stop.name;
+                        var duration = stop.duration;
+            var refueling = stop.refueling;
+
+            var arriveTime = new Date(currentDate);
+            if (i > 0) {
+                arriveTime.setSeconds(arriveTime.getSeconds() + line[i - 1].duration); // Add duration from previous stop
+            } else {
+                arriveTime.setHours(startHours);
+                arriveTime.setMinutes(startMinutes);
+                arriveTime.setSeconds(0);
             }
 
-            var line = lines[lineSelect];
-            var currentDate = new Date();
-            var startHours = parseInt(startTime.split(':')[0]);
-            var startMinutes = parseInt(startTime.split(':')[1]);
-            currentDate.setHours(startHours);
-            currentDate.setMinutes(startMinutes);
-            currentDate.setSeconds(0); // Set seconds to zero
+            var departTime = new Date(arriveTime);
+            departTime.setSeconds(departTime.getSeconds() + PAUSE_TIME); // Add pause time in seconds
 
-            var scheduleBody = document.getElementById('scheduleBody');
-            scheduleBody.innerHTML = ''; // Clear previous results
+            var cellName = document.createElement('td');
+            cellName.textContent = stopName;
+            var cellArrive = document.createElement('td');
+            cellArrive.textContent = formatTime(arriveTime);
+            var cellDepart = document.createElement('td');
+            cellDepart.textContent = formatTime(departTime);
+            var cellRefuel = document.createElement('td');
+            cellRefuel.classList.add('icon');
+            cellRefuel.classList.add(refueling ? 'icon-refuel' : 'icon-no-refuel'); // Ajout de la classe pour l'icône
 
-            for (var i = 0; i < line.length; i++) {
-    var row = document.createElement('tr');
-    var stop = line[i];
-    var stopName = stop.name;
-    var duration = stop.duration;
+            row.appendChild(cellName);
+            row.appendChild(cellArrive);
+            row.appendChild(cellDepart);
+            row.appendChild(cellRefuel);
 
-    var arriveTime = new Date(currentDate);
-    if (i > 0) {
-        arriveTime.setSeconds(arriveTime.getSeconds() + line[i - 1].duration); // Add duration from previous stop
-    } else {
-        arriveTime.setHours(startHours);
-        arriveTime.setMinutes(startMinutes);
-        arriveTime.setSeconds(0);
+            scheduleBody.appendChild(row);
+
+            // Play arrival sound
+            let arriveTimeoutId = setTimeout(function () {
+                if (!document.getElementById('muteSound').checked) {
+                    var audio = new Audio(stop.arrivalSound);
+                    audio.play();
+                }
+            }, arriveTime.getTime() - Date.now()); // Play sound at arrival time
+            timeoutIds.push(arriveTimeoutId); // Store timeout ID
+
+            // Play departure sound
+            let departTimeoutId = setTimeout(function () {
+                if (!document.getElementById('muteSound').checked) {
+                    var audio = new Audio(stop.departureSound);
+                    audio.play();
+                }
+            }, departTime.getTime() - Date.now()); // Play sound at departure time
+            timeoutIds.push(departTimeoutId); // Store timeout ID
+
+            currentDate = departTime;
+        }
+
     }
 
-    var departTime = new Date(arriveTime);
-    departTime.setSeconds(departTime.getSeconds() + PAUSE_TIME); // Add pause time in seconds
+    function resetSchedule() {
+        // Clear the schedule table
+        var scheduleBody = document.getElementById('scheduleBody');
+        scheduleBody.innerHTML = '';
 
-    var cellName = document.createElement('td');
-    cellName.textContent = stopName;
-    var cellArrive = document.createElement('td');
-    cellArrive.textContent = formatTime(arriveTime);
-    var cellDepart = document.createElement('td');
-    cellDepart.textContent = formatTime(departTime);
+        // Clear all previous timeouts
+        timeoutIds.forEach(id => clearTimeout(id));
+        timeoutIds = [];
+    }
 
-    row.appendChild(cellName);
-    row.appendChild(cellArrive);
-    row.appendChild(cellDepart);
-    scheduleBody.appendChild(row);
+    function formatTime(date) {
+        return date.getHours().toString().padStart(2, '0') + ':' +
+            date.getMinutes().toString().padStart(2, '0') + ':' +
+            date.getSeconds().toString().padStart(2, '0');
+    }
 
-    // Play arrival sound
-    let arriveTimeoutId = setTimeout(function() {
-        if (!document.getElementById('muteSound').checked) {
-            var audio = new Audio(stop.arrivalSound);
-            audio.play();
-        }
-    }, arriveTime.getTime() - Date.now()); // Play sound at arrival time
-    timeoutIds.push(arriveTimeoutId); // Store timeout ID
+    function updateClock() {
+        var now = new Date();
+        var options = { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        var timeString = now.toLocaleTimeString('fr-FR', options);
+        document.getElementById('clock').textContent = timeString;
+    }
 
-    // Play departure sound
-    let departTimeoutId = setTimeout(function() {
-        if (!document.getElementById('muteSound').checked) {
-            var audio = new Audio(stop.departureSound);
-            audio.play();
-        }
-    }, departTime.getTime() - Date.now()); // Play sound at departure time
-    timeoutIds.push(departTimeoutId); // Store timeout ID
-
-    currentDate = departTime;
-}
-
-        } 
-
-        function resetSchedule() {
-            // Clear the schedule table
-            var scheduleBody = document.getElementById('scheduleBody');
-            scheduleBody.innerHTML = '';
-
-            // Clear all previous timeouts
-            timeoutIds.forEach(id => clearTimeout(id));
-            timeoutIds = [];
-        }
-
-        function formatTime(date) {
-            return date.getHours().toString().padStart(2, '0') + ':' +
-                date.getMinutes().toString().padStart(2, '0') + ':' +
-                date.getSeconds().toString().padStart(2, '0');
-        }
-
-        function updateClock() {
-            var now = new Date();
-            var options = { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            var timeString = now.toLocaleTimeString('fr-FR', options);
-            document.getElementById('clock').textContent = timeString;
-        }
-
-        setInterval(updateClock, 1000); // Update clock every second
-        updateClock(); // Initial update
-    </script>
+    setInterval(updateClock, 1000); // Update clock every second
+    updateClock(); // Initial update
+</script>
 </body>
 </html>
+
+            
