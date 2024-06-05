@@ -36,6 +36,8 @@
         .clock-container,
         .info-container,
         .container,
+        .listen-container,
+        .additional-info-container,
         .instructions-container {
             background-color: #1B1C1E;
             padding: 20px;
@@ -58,8 +60,10 @@
         .clock-container {
             font-size: 2rem;
             text-align: center;
+            margin-top: 0px;
         }
         .container h1,
+        .additional-info-container,
         .instructions-container h2 {
             color: #ffffff;
             font-size: 2rem;
@@ -150,6 +154,7 @@
     }
         .icon-refuel::before {
             content: url('https://img.icons8.com/ios-filled/50/000000/gas-pump.png'); /* Icône de pompe à essence */
+            color: #bd0a0a;
         }
         .icon-no-refuel::before {
             content: url('https://img.icons8.com/ios-filled/50/000000/cancel.png'); /* Icône de croix */
@@ -158,10 +163,23 @@
             width: 1px; /* Ajustez la largeur de la colonne */
         }
         @media (max-width: 600px) {
-            .main-container {
+            .clock-container,
+            .info-container,
+            .container,
+            .instructions-container,
+            .additional-info-container {
                 flex-direction: column;
                 align-items: center;
             }
+        }
+        .listen-container audio {
+            width: 50%;
+            margin-top: 5px;
+            margin-left: 10px;
+        }
+        .additional-info-container {
+            margin-top: 50px;
+            margin-left: -20px;
         }
     </style>
 </head>
@@ -176,6 +194,11 @@
                 <p>N'oubliez pas de remplir votre fiche de service</p>
                 <a href="https://forms.gle/1XKGHLdrCsUC5wRu7" target="_blank" class="button-link">Voir le document</a>
             </div>
+            <div class="listen-container">
+                <h2>Écouter les Bips</h2>
+                <p>Bip d'arrivée: <audio src="sounds/arrival.mp3" controls></audio></p>
+                <p>Bip de départ: <audio src="sounds/departure.mp3" controls></audio></p>
+            </div>
         </div>
         <div class="container">
             <h1>Calcul des Horaires de Bus</h1>
@@ -185,7 +208,7 @@
             <p>Sélectionnez votre ligne :</p>
             <select id="lineSelect">
                 <option value="">--Sélectionner une ligne--</option>
-                <option value="ligne1">Ligne 1</option>
+                <option value="ligne1">Ligne 83 (aller-retour)</option>
                 <option value="ligne2">Ligne 2</option>
                 <option value="ligne3">Ligne 3</option>
             </select>
@@ -220,33 +243,40 @@
                 <p>2. Sélectionnez la ligne de bus parmi les options disponibles.</p>
                 <p>3. Cliquez sur "Calculer les Horaires" pour générer le tableau des horaires.</p>
                 <p>4. Consultez le tableau des horaires pour voir les heures d'arrivée et de départ aux différents arrêts.</p>
+                    <div class="additional-info-container"> <!-- Nouveau bloc pour les informations supplémentaires -->
+                        <h2>Informations supplémentaires</h2>
+                        <p>Ajoutez vos informations supplémentaires ici.</p>
+                    </div>
+            </div>
+                
             </div>
             </div>
+            </body>
             
             <script>
                 const PAUSE_TIME = 30; // Temps de pause en secondes (30 secondes)
-                const REFUELING_TIME = 120; // Temps de pause pour faire le plein en secondes (2 minutes)
+                const REFUELING_TIME = 200; // Temps de pause pour faire le plein en secondes (2 minutes)
             
                 const lines = {
                     'ligne1': [
-                        { name: 'Gare Routière', duration: 15, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Hôpital St Boise', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Concessionnaire', duration: 45, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Quartier des Tilleuls', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Amboise Nord Centre', duration: 30, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }, // Arrêt pour faire le plein
-                        { name: 'Circuit Karting', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Garage Karting', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Dépôt des Routiers', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Magasin de vêtements', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Z.I Fuye 1', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'La Fuye Centre', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'La Reigneire', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'UFO Grill', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Z.I La Fuye 3', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Domaine Viticole', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Camp de Bucheron', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Déchetterie', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-                        { name: 'Gare Routière', duration: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+                        { name: 'Gare Routière', duration: 70, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Hôpital St Boise', duration: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Concessionnaire', duration: 78, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Quartier des Tilleuls', duration: 70, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Amboise Nord Centre', duration: 77, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }, // Arrêt pour faire le plein
+                        { name: 'Circuit Karting', duration: 35, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Garage Karting', duration: 35, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Dépôt des Routiers', duration: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Magasin de vêtements', duration: 58, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Z.I Fuye 1', duration: 120, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'La Fuye Centre', duration: 105, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'La Reigneire', duration: 65, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'UFO Grill', duration: 65, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Z.I La Fuye 3', duration: 105, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Domaine Viticole', duration: 105, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Camp de Bucheron', duration: 68, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Déchetterie', duration: 20, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+                        { name: 'Gare Routière', duration: 5, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
                     ],
                     'ligne2': [
                         { name: 'Arrêt X', duration: 15, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }, // Arrêt pour faire le plein
@@ -288,7 +318,9 @@
                         var stop = line[i];
                         var stopName = stop.name;
                         var duration = stop.duration;
+                    
             var refueling = stop.refueling;
+            
 
             var arriveTime = new Date(currentDate);
             if (i > 0) {
@@ -298,9 +330,11 @@
                 arriveTime.setMinutes(startMinutes);
                 arriveTime.setSeconds(0);
             }
+            
 
             var departTime = new Date(arriveTime);
-            departTime.setSeconds(departTime.getSeconds() + PAUSE_TIME); // Add pause time in seconds
+                var pauseTime = stop.refueling ? REFUELING_TIME : PAUSE_TIME;
+                departTime.setSeconds(departTime.getSeconds() + pauseTime); // Add pause time in seconds
 
             var cellName = document.createElement('td');
             cellName.textContent = stopName;
@@ -370,5 +404,4 @@
 </script>
 </body>
 </html>
-
             
