@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Menu</title>
+    <style>
+        .menu-bar {
+            position: relative;
+        }
+        .dropdown {
+            display: inline-block;
+            position: relative;
+        }
+        .dropdown a {
+            display: block;
+            padding: 10px;
+            background-color: #c52020;
+            color: white;
+            text-decoration: none;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #ffffff;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+        }
+        .dropdown-content button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px;
+            background-color: rgba(197, 32, 32, 0);
+            border: none;
+            cursor: pointer;
+            color: black;
+        }
+        .dropdown-content button:hover {
+            background-color: rgba(221, 221, 221, 0);
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .content {
+            padding-top: 60px;
+        }
+    </style>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</head>
+<body>
+    <div class="menu-bar">
+        <div class="dropdown">
+            <a href="#">🚌 Bus</a>
+            <div class="dropdown-content">
+                <button onclick="navigateTo('bus/horaire/bustps.html')">Horaires</button>
+                <button onclick="navigateTo('bus/ligne/ligneBus.html')">Lignes</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#">🚕 Taxi</a>
+            <div class="dropdown-content">
+                <button onclick="navigateTo('taxi/PrixTaxi.html')">Prix Taxi</button>
+                <button onclick="navigateTo('page2.html')">RAS</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#">📰 Journal</a>
+            <div class="dropdown-content">
+                <button onclick="navigateTo('page1.html')">RAS</button>
+                <button onclick="navigateTo('page2.html')">RAS</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
