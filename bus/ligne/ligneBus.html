@@ -14,8 +14,8 @@
 
     .container {
         position: relative;
-      width: 1000px; /* Ajustez la largeur du cadre selon vos besoins */
-      height: 1000px;
+      width: 900px; /* Ajustez la largeur du cadre selon vos besoins */
+      height: 900px;
       overflow: hidden;
     }
 
@@ -54,7 +54,7 @@
     }
 
     .footer-button {
-      margin-top: 980px;
+      margin-top: 850px;
       margin-left: -150px;
       text-align: center;
     }
@@ -69,6 +69,22 @@
       font-weight: bolder;
 
     }
+    .back-to-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #00345f;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            text-decoration: none;
+        }
+
+        .back-to-menu:hover {
+            background-color: #74bed483;
+        }
 
     
     
@@ -76,6 +92,7 @@
   </style>
 </head>
 <body>
+  <a href="../../index.html" class="back-to-menu">Retour au Menu</a>
   <div class="container" id="zoomContainer">
         <img src="https://zupimages.net/up/23/43/l25t.png" alt="Image 1" class="image1">
         <img src="https://zupimages.net/up/23/42/b30b.png" alt="Image 2" class="image2">
