@@ -198,10 +198,28 @@
     height: 100%;
     cursor: pointer;
 }
+.back-to-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #00345f;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            text-decoration: none;
+        }
+
+        .back-to-menu:hover {
+            background-color: #74bed483;
+        }
 
     </style>
 </head>
 <body>
+    <a href="../../index.html" class="back-to-menu">Retour au Menu</a>
+
     <div class="main-container">
         <div class="column">
             <div class="clock-container">
@@ -226,13 +244,16 @@
             <p>Sélectionnez votre ligne :</p>
             <select id="lineSelect">
                 <option value="">--Sélectionner une ligne--</option>
-                <option value="ligne1">Ligne 83 (aller-retour)</option>
-                <option value="ligne2">Ligne X</option>
-                <option value="ligne3">Ligne 13</option>
+                <option value="ligne1">Ligne 83 (boucle)</option>
+                <option value="ligne2">Ligne 70 (aller-retour)</option>
+                <option value="ligne3">Ligne 5 (aller-retour)</option>
+                <option value="ligne4">Ligne 3 (aller-retour)</option>
+                <option value="ligne5">Ligne 46 (aller-retour)</option>
             </select>
 
-            <button onclick="calculateSchedule()">Calculer les Horaires</button>
-            <button onclick="resetSchedule()">Annuler la Ligne</button>
+            <button onclick="calculateSchedule()">Calculer des horaires</button>
+            <button onclick="resetSchedule()">Annuler</button>
+            <button onclick="addFiveSeconds()">+5s</button>
 
             <label style="display: flex; align-items: center;">
                 <input type="checkbox" id="muteSound">
@@ -278,7 +299,7 @@
             
             <script>
                 const PAUSE_TIME = 30; // Temps de pause en secondes (30 secondes)
-                const REFUELING_TIME = 150; // Temps de pause pour faire le plein en secondes (2 minutes)
+                const REFUELING_TIME = 200; // Temps de pause pour faire le plein en secondes (2 minutes)
             
                 const lines = {
                     'ligne1': [
@@ -293,7 +314,7 @@
         { name: 'Magasin de vêtements', duration: 58, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
         { name: 'Z.I Fuye 1', duration: 120, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
         { name: 'La Fuye Centre', duration: 105, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'La Reigneire', duration: 65, pause: 120, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Reigneire', duration: 65, pause: 200, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
         { name: 'UFO Grill', duration: 65, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
         { name: 'Z.I La Fuye 3', duration: 105, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
         { name: 'Domaine Viticole', duration: 105, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
@@ -302,25 +323,75 @@
         { name: 'Gare Routière', duration: 5, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
     ],
     'ligne2': [
-        { name: 'Gare Routière', duration: 120, pause: 10, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        
+        { name: 'Gare Routière', duration: 50, pause: 10, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Concessionnaire', duration: 80, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Quartier des Tilleuls', duration: 90, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Amboise Nord Centre', duration: 70, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Z.R Amboise Sud', duration: 75, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Magasin de vêtements', duration: 80, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'UFO Grill', duration: 130, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Reigneire', duration: 55, pause: 200, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'UFO Grill', duration: 125, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Magasin de vêtements', duration: 90, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Z.R Amboise Sud', duration: 75, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Amboise Nord Centre', duration: 60, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Quartier des Tilleuls', duration: 100, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Concessionnaire', duration: 45, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Gare Routière', duration: 5, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }        
     ],
     'ligne3': [
-        { name: 'Gare Routière', duration: 120, pause: 10, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'Amboise Nord Centre', duration: 50, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'Mine', duration: 50, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'Camp de Bucheron', duration: 180, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'La Reigneire', duration: 180, pause: 120, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'Camp de Bucheron', duration: 50, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'Mine', duration: 50, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'Amboise Nord Centre', duration: 120, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
-        { name: 'Gare Routière', duration: 5, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+        { name: 'Hôpital St Boise', duration: 50, pause: 10, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Gare Routière', duration: 50, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Concessionnaire', duration: 80, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Quartier des Tilleuls', duration: 90, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Amboise Nord Centre', duration: 70, pause: 200, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Z.R Amboise Sud', duration: 30, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Camp de Bucheron', duration: 60, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Z.R Amboise Sud', duration: 75, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Amboise Nord Centre', duration: 60, pause: 200, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Quartier des Tilleuls', duration: 100, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Concessionnaire', duration: 45, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Gare Routière', duration: 75, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Hôpital St Boise', duration: 5, pause: 10, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }        
+    ],
+    'ligne4': [
+        { name: 'Hôpital St Boise', duration: 50, pause: 10, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Gare Routière', duration: 40, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Déchetterie', duration: 60, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Z.R Amboise Sud', duration: 65, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Magasin de vêtements', duration: 70, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Fuye 1 Z.R', duration: 120, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'UFO Grill', duration: 130, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Reigneire', duration: 55, pause: 200, refueling: true, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'UFO Grill', duration: 80, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Fuye 1 Z.R', duration: 70, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Magasin de vêtements', duration: 90, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Z.R Amboise Sud', duration: 60, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Déchetterie', duration: 20, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Gare Routière', duration: 75, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Hôpital St Boise', duration: 5, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
+    ],
+    'ligne5': [
+        { name: 'Gare Routière', duration: 40, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Déchetterie', duration: 80, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Camp de Bucheron', duration: 120, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Domaine Viticole', duration: 100, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Fuye 3 Z.R', duration: 30, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Fuye 2 Z.R', duration: 40, pause: 60, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'La Fuye 3 Z.R', duration: 110, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Domaine Viticole', duration: 115, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Camp de Bucheron', duration: 80, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Déchetterie', duration: 20, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Gare Routière', duration: 75, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' },
+        { name: 'Hôpital St Boise', duration: 5, pause: 30, refueling: false, arrivalSound: 'sounds/arrival.mp3', departureSound: 'sounds/departure.mp3' }
     ]
                 };
             
                 let timeoutIds = []; // Stocker les identifiants de timeout pour les sons
+let timeAdjustment = 0; // Variable pour stocker le temps de décalage en secondes
+let muteTemporarily = false; // Variable pour désactiver les sons temporairement
 
-                function calculateSchedule() {
+function calculateSchedule() {
     resetSchedule();
     var startTime = document.getElementById('startTime').value;
     var lineSelect = document.getElementById('lineSelect').value;
@@ -338,6 +409,9 @@
     currentDate.setMinutes(startMinutes);
     currentDate.setSeconds(0); // Set seconds to zero
 
+    // Ajouter le décalage de temps ici
+    currentDate.setSeconds(currentDate.getSeconds() + timeAdjustment);
+
     var scheduleBody = document.getElementById('scheduleBody');
     scheduleBody.innerHTML = ''; // Clear previous results
 
@@ -352,10 +426,6 @@
         var arriveTime = new Date(currentDate);
         if (i > 0) {
             arriveTime.setSeconds(arriveTime.getSeconds() + line[i - 1].duration); // Add duration from previous stop
-        } else {
-            arriveTime.setHours(startHours);
-            arriveTime.setMinutes(startMinutes);
-            arriveTime.setSeconds(0);
         }
 
         var departTime = new Date(arriveTime);
@@ -380,7 +450,7 @@
 
         // Play arrival sound
         let arriveTimeoutId = setTimeout(function () {
-            if (!document.getElementById('muteSound').checked) {
+            if (!muteTemporarily && !document.getElementById('muteSound').checked) {
                 var audio = new Audio(stop.arrivalSound);
                 audio.play();
             }
@@ -389,7 +459,7 @@
 
         // Play departure sound
         let departTimeoutId = setTimeout(function () {
-            if (!document.getElementById('muteSound').checked) {
+            if (!muteTemporarily && !document.getElementById('muteSound').checked) {
                 var audio = new Audio(stop.departureSound);
                 audio.play();
             }
@@ -400,6 +470,13 @@
     }
 }
 
+// Fonction pour ajouter 5 secondes à tous les horaires
+function addFiveSeconds() {
+    muteTemporarily = true; // Désactiver temporairement les sons
+    timeAdjustment += 5; // Ajouter 5 secondes au décalage de temps
+    calculateSchedule(); // Recalculer les horaires avec le nouveau décalage
+    muteTemporarily = false; // Réactiver les sons après le recalcul
+}
 
 function resetSchedule() {
     // Clear the schedule table
@@ -420,16 +497,17 @@ function formatTime(date) {
            (seconds < 10 ? '0' + seconds : seconds);
 }
 
+function updateClock() {
+    var now = new Date();
+    var options = { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    var timeString = now.toLocaleTimeString('fr-FR', options);
+    document.getElementById('clock').textContent = timeString;
+}
 
-    function updateClock() {
-        var now = new Date();
-        var options = { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        var timeString = now.toLocaleTimeString('fr-FR', options);
-        document.getElementById('clock').textContent = timeString;
-    }
+setInterval(updateClock, 1000); // Update clock every second
+updateClock(); // Initial update
 
-    setInterval(updateClock, 1000); // Update clock every second
-    updateClock(); // Initial update
+
 </script>
 </body>
 </html>
